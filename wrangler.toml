@@ -1,0 +1,15 @@
+name = "packages_echocat_org"
+type = "webpack"
+compatibility_date = "2021-10-29"
+
+account_id = ""
+workers_dev = true
+route = ""
+zone_id = ""
+
+[site]
+bucket = "./public"
+entry-point = "cloudflare-worker"
+
+[vars]
+GITHUB_ACCESS_USER = "echocatbot"
