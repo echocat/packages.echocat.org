@@ -2,11 +2,49 @@
 
 Source files for the frontend of [packages.echocat.org](https://packages.echocat.org) service.
 
-This is a maven repository access proxy for echocat's projects.
+## TOC
 
-* [Deployment](#Deployment)
+* [Usage](#usage)
+* [Deployment](#deployment)
 * [Contributing](#contributing)
 * [License](#license)
+
+## Usage
+
+This is a Maven repository access proxy for echocat's projects and can be accessed via `https://packages.echocat.org/maven/<artifact>`. Simply add this repository to your projects using:
+
+### For dependencies
+```xml
+<repositories>
+    <repository>
+        <id>echocat</id>
+        <url>https://packages.echocat.org/maven</url>
+    </repository>
+</repositories>
+```
+
+### For dependencies with snapshots
+```xml
+<repositories>
+   <repository>
+      <id>echocat</id>
+      <url>https://packages.echocat.org/maven</url>
+      <snapshots>
+            <enabled>true</enabled>
+      </snapshots>
+   </repository>
+</repositories>
+```
+
+### For plugins
+```xml
+<pluginRepositories>
+    <pluginRepository>
+        <id>echocat</id>
+        <url>https://packages.echocat.org/maven</url>
+    </pluginRepository>
+</pluginRepositories>
+```
 
 ## Deployment
 
