@@ -5,6 +5,7 @@ const oneYearInSeconds = oneDayInSeconds * 365;
 
 const ttlSnapshots = oneMinuteInSeconds * 15;
 const ttlReleases = oneYearInSeconds;
+const ttlNotFound = oneMinuteInSeconds * 5;
 
 const snapshotUrlPattern = /^.+\/[0-9a-z.-]+-SNAPSHOT[0-9a-z.-]*\/[a-z0-9.-]+$/si;
 
@@ -27,15 +28,38 @@ export class GitHubPackages {
     }
 
     async _findFile(request, repository, file) {
+        if (request.method !== 'GET' && request.method !== 'HEAD') {
+            throw `Can only handle requests of type GET and HEAD; but got '${request.method}'.`;
+        }
+
         const repoUrl = this._repoUrlFor(repository, file);
         const snapshot = this._isSnapshotSourceUrl(file);
         const ttl = snapshot ? ttlSnapshots : ttlReleases;
 
-        const cacheKey = new Request(repoUrl.toString(), request);
+        const cacheKey = new Request(repoUrl.toString(), {
+            method: 'GET',
+        });
         const cache = caches.default;
 
-        let response = await cache.match(cacheKey);
-        if (!response) {
+        let response;
+
+        for (let run = 0; run < 10; run++) {
+            response = await cache.match(cacheKey);
+
+            if (response) {
+                if (request.method === 'HEAD') {
+                    // In case of HEAD we retrieved the body from the remote,
+                    // but should obviously not return this to the client.
+                    // So, we create a response without body.
+                    return new Response(null, response)
+                }
+                return response;
+            }
+
+            if (run === 0) {
+                console.log(`Cache missed, need to retrieve it: ${this.organization}/${repository}/${file}...`)
+            }
+
             const auth = btoa(`${this.accessUser}:${this.accessToken}`)
             response = await fetch(repoUrl.toString(), {
                 headers: {
@@ -43,15 +67,25 @@ export class GitHubPackages {
                 },
             });
 
-            // Reconstruct the Response object to make its headers mutable.
-            response = new Response(response.body, response)
-            response.headers.set("Cache-Control", `public, max-age=${ttl}, immutable`);
-            response.headers.set("X-Snapshot", `${snapshot}`);
+            if (response.status >= 400 && response.status !== 404) {
+                // We'll never cache that problem, but just forward the result.
+                console.log(`Cache missed, need to retrieve it: ${this.organization}/${repository}/${file}... FAILED (reason: ${response.status} - ${response.statusText})!`)
+                return response;
+            }
 
-            await cache.put(cacheKey, response.clone());
+            // Reconstruct the Response object to make its headers mutable.
+            const toCacheResponse = new Response(response.body, response)
+            toCacheResponse.headers.set("X-Snapshot", `${snapshot}`);
+            toCacheResponse.headers.set("Cache-Control", `public, max-age=${response.status >= 400 ? ttlNotFound : ttl}, immutable`);
+            await cache.put(cacheKey, toCacheResponse);
+
+            console.log(`Cache missed, need to retrieve it: ${this.organization}/${repository}/${file}... DONE (exists: ${response.status < 400})!`)
         }
 
-        return response
+        console.log(`Cache missed, need to retrieve it: ${this.organization}/${repository}/${file}... FAILED (reason: unknown)!`)
+        return new Response(null, {
+            status: 400
+        });
     }
 
     _repoUrlFor(repository, file) {
