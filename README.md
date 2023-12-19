@@ -56,7 +56,7 @@ This is a Maven repository access proxy for echocat's projects and can be access
 ### Local development
 
 ```bash
-$ wrangler dev 
+$ npm run start 
 ```
 
 [More details.](https://developers.cloudflare.com/workers/cli-wrangler/commands#dev)
@@ -67,7 +67,7 @@ $ wrangler dev
 2. Commit/Push the latest changes to git.
 3. [Publish the changes](https://developers.cloudflare.com/workers/cli-wrangler/commands#publish)
    ```bash
-   $ wrangler publish
+   $ npm run deploy
    ```
 
 ## Contributing

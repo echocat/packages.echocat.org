@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "packages.echocat.org",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "license": "MIT",
+  "scripts": {
+    "start": "wrangler dev --test-scheduled",
+    "deploy": "wrangler deploy",
+    "login": "wrangler login"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20231121.0",
+    "better-sqlite3": "^9.2.2",
+    "typescript": "^5.3.3",
+    "wrangler": "^3.21.0"
+  },
+  "dependencies": {
+    "@cloudflare/kv-asset-handler": "^0.3.0",
+    "@octokit/core": "^5.0.2",
+    "@octokit/plugin-paginate-rest": "^9.1.5",
+    "@octokit/rest": "^20.0.2",
+    "yaml": "^2.3.4"
+  }
+}

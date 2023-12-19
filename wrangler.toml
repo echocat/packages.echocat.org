@@ -1,15 +1,13 @@
 name = "packages_echocat_org"
-type = "webpack"
-compatibility_date = "2021-10-29"
+main = "src/index.ts"
+compatibility_date = "2023-12-19"
 
-account_id = ""
-workers_dev = true
-route = ""
-zone_id = ""
-
-[site]
-bucket = "./public"
-entry-point = "cloudflare-worker"
+kv_namespaces = [
+    { binding = "KV", id = "2aebe3f8f0b7463397f06cf498d082fa", preview_id = "194372f42e834b6ca81e0dd188bb59d1" }
+]
 
 [vars]
 GITHUB_ACCESS_USER = "echocatbot"
+
+[triggers]
+crons = [ "0 8,10,12,14,15,16,18,20,22,24 * * *" ]
