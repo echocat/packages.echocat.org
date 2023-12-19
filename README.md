@@ -11,9 +11,14 @@ Source files for the frontend of [packages.echocat.org](https://packages.echocat
 
 ## Usage
 
+* [Maven](#maven)
+* [Helm](#helm)
+
+### Maven
+
 This is a Maven repository access proxy for echocat's projects and can be accessed via `https://packages.echocat.org/maven/<artifact>`. Simply add this repository to your projects using:
 
-### For dependencies
+#### For dependencies
 ```xml
 <repositories>
     <repository>
@@ -23,7 +28,7 @@ This is a Maven repository access proxy for echocat's projects and can be access
 </repositories>
 ```
 
-### For dependencies with snapshots
+#### For dependencies with snapshots
 ```xml
 <repositories>
    <repository>
@@ -36,7 +41,7 @@ This is a Maven repository access proxy for echocat's projects and can be access
 </repositories>
 ```
 
-### For plugins
+#### For plugins
 ```xml
 <pluginRepositories>
     <pluginRepository>
@@ -44,6 +49,14 @@ This is a Maven repository access proxy for echocat's projects and can be access
         <url>https://packages.echocat.org/maven</url>
     </pluginRepository>
 </pluginRepositories>
+```
+
+### Helm
+
+This is a Helm repository access proxy for echocat's projects and can be accessed via https://packages.echocat.org/helm Simply add this repository to your projects using:
+
+```shell
+$ helm repo add https://packages.echocat.org/helm
 ```
 
 ## Deployment
@@ -56,6 +69,7 @@ This is a Maven repository access proxy for echocat's projects and can be access
 ### Local development
 
 ```bash
+$ npm install
 $ npm run start 
 ```
 
@@ -67,6 +81,7 @@ $ npm run start
 2. Commit/Push the latest changes to git.
 3. [Publish the changes](https://developers.cloudflare.com/workers/cli-wrangler/commands#publish)
    ```bash
+   $ npm install
    $ npm run deploy
    ```
 
