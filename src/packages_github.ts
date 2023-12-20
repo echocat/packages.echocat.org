@@ -17,7 +17,10 @@ const helmChartPackageFileNamePattern = /^(.+)(-helm-chart\.tgz)$/;
 const mavenSnapshotUrlPattern = /^.+\/[0-9a-z.-]+-SNAPSHOT[0-9a-z.-]*\/[a-z0-9.-]+$/is;
 
 export class GitHubPackages {
-    public constructor(public organization: string, public helmEnabledRepositories: string[]) {}
+    public constructor(
+        public organization: string,
+        public helmEnabledRepositories: string[],
+    ) {}
 
     public async findMavenFile(request: Request, env: Environment, type: Type, organization: Organization, repository: Repository, file: string): Promise<Response | undefined> {
         if (type !== Type.github) {
