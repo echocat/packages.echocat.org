@@ -13,4 +13,4 @@ node_compat = true
 GITHUB_ACCESS_USER = "echocatbot"
 
 [triggers]
-crons = [ "0 8,10,12,14,15,16,18,20,22,24 * * *" ]
+crons = [ "0 */2 * * *" ]
