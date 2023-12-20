@@ -6,6 +6,8 @@ kv_namespaces = [
     { binding = "KV", id = "2aebe3f8f0b7463397f06cf498d082fa", preview_id = "194372f42e834b6ca81e0dd188bb59d1" }
 ]
 
+node_compat = true
+
 [vars]
 GITHUB_ACCESS_USER = "echocatbot"
 
