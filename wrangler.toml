@@ -1,4 +1,4 @@
-name = "packages_echocat_org"
+name = "packages"
 main = "src/index.ts"
 compatibility_date = "2023-12-19"
 account_id = "76cbc9ff3d45b6d0e9963e41ddeb9b71"
