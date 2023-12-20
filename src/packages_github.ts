@@ -76,7 +76,7 @@ export class GitHubPackages {
             // Reconstruct the Response object to make its headers mutable.
             const toCacheResponse = new Response(fetchedResponse.body, response);
             toCacheResponse.headers.set('X-Snapshot', `${snapshot}`);
-            toCacheResponse.headers.set('Cache-Control', `public, max-age=${fetchedResponse.status >= 400 ? ttlNotFound : ttl}, immutable`);
+            toCacheResponse.headers.set('Cache-Control', `public, max-age=${fetchedResponse.status >= 400 ? ttlNotFound : ttl}, public`);
             await cache.put(cacheKey, toCacheResponse);
 
             console.info(`Cache missed, need to retrieve it: ${this.organization}/${repository}/${file}... DONE (exists: ${fetchedResponse.status < 400})!`);

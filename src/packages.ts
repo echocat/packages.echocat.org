@@ -50,7 +50,7 @@ export class CompoundPackages implements Packages {
     public async findHelmIndex(request: Request, env: Environment): Promise<Response | undefined> {
         let content: ReadableStream<any> | string | null = await env.KV.get(helmIndexKey, {
             type: 'stream',
-            cacheTtl: oneDayInSeconds,
+            cacheTtl: oneMinuteInSeconds,
         });
 
         if (!content) {
@@ -63,7 +63,7 @@ export class CompoundPackages implements Packages {
             status: 200,
             headers: {
                 'Content-Type': 'text/yaml',
-                'Cache-Control': `public, max-age=${oneMinuteInSeconds * 5}, immutable`,
+                'Cache-Control': `public, max-age=${oneMinuteInSeconds * 5}, public`,
             },
         };
 
