@@ -1,10 +1,10 @@
 name = "packages_echocat_org"
 main = "src/index.ts"
 compatibility_date = "2023-12-19"
-account_id = "76cbc9ff3d45b6d0e9963e41ddeb9b71"
+account_id = "eae269e15c934608f8593a46c8628bcc"
 
 kv_namespaces = [
-    { binding = "KV", id = "3f57607bdf1e4fdda53131b1dfffd321", preview_id = "07bf3358543541d4a25d6461f564a438" }
+    { binding = "KV", id = "2aebe3f8f0b7463397f06cf498d082fa", preview_id = "194372f42e834b6ca81e0dd188bb59d1" }
 ]
 
 node_compat = true
