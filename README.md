@@ -4,21 +4,22 @@ Source files for the frontend of [packages.echocat.org](https://packages.echocat
 
 ## TOC
 
-* [Usage](#usage)
-* [Deployment](#deployment)
-* [Contributing](#contributing)
-* [License](#license)
+-   [Usage](#usage)
+-   [Deployment](#deployment)
+-   [Contributing](#contributing)
+-   [License](#license)
 
 ## Usage
 
-* [Maven](#maven)
-* [Helm](#helm)
+-   [Maven](#maven)
+-   [Helm](#helm)
 
 ### Maven
 
 This is a Maven repository access proxy for echocat's projects and can be accessed via `https://packages.echocat.org/maven/<artifact>`. Simply add this repository to your projects using:
 
 #### For dependencies
+
 ```xml
 <repositories>
     <repository>
@@ -29,6 +30,7 @@ This is a Maven repository access proxy for echocat's projects and can be access
 ```
 
 #### For dependencies with snapshots
+
 ```xml
 <repositories>
    <repository>
@@ -42,6 +44,7 @@ This is a Maven repository access proxy for echocat's projects and can be access
 ```
 
 #### For plugins
+
 ```xml
 <pluginRepositories>
     <pluginRepository>
@@ -70,7 +73,7 @@ $ helm repo add https://packages.echocat.org/helm
 
 ```bash
 $ npm install
-$ npm run start 
+$ npm run start
 ```
 
 [More details.](https://developers.cloudflare.com/workers/cli-wrangler/commands#dev)
@@ -80,10 +83,10 @@ $ npm run start
 1. Ensure everything works in [local development](#local-development).
 2. Commit/Push the latest changes to git.
 3. [Publish the changes](https://developers.cloudflare.com/workers/cli-wrangler/commands#publish)
-   ```bash
-   $ npm install
-   $ npm run deploy
-   ```
+    ```bash
+    $ npm install
+    $ npm run deploy
+    ```
 
 ## Contributing
 

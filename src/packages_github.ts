@@ -1,5 +1,5 @@
 import {Octokit} from '@octokit/rest';
-import YAML from 'yaml';
+import {parse} from 'yaml';
 import {Environment} from './common';
 import {HelmChart, HelmIndex, HelmIndexApiVersion, HelmIndexEntry, HelmIndexEntryHolder} from './helm';
 import {Organization, Repository, Type} from './packages';
@@ -14,15 +14,10 @@ const ttlReleases = oneYearInSeconds;
 const ttlNotFound = oneMinuteInSeconds * 5;
 
 const helmChartPackageFileNamePattern = /^(.+)(-helm-chart\.tgz)$/;
-const mavenSnapshotUrlPattern = /^.+\/[0-9a-z.-]+-SNAPSHOT[0-9a-z.-]*\/[a-z0-9.-]+$/si;
+const mavenSnapshotUrlPattern = /^.+\/[0-9a-z.-]+-SNAPSHOT[0-9a-z.-]*\/[a-z0-9.-]+$/is;
 
 export class GitHubPackages {
-
-    public constructor(
-        public organization: string,
-        public helmEnabledRepositories: string[],
-    ) {
-    }
+    public constructor(public organization: string, public helmEnabledRepositories: string[]) {}
 
     public async findMavenFile(request: Request, env: Environment, type: Type, organization: Organization, repository: Repository, file: string): Promise<Response | undefined> {
         if (type !== Type.github) {
@@ -46,12 +41,10 @@ export class GitHubPackages {
         const cacheKey = new Request(repoUrl.toString(), {
             method: 'GET',
         });
-        const cache = await caches.open("default");
-
-        let response: Response;
+        const cache = await caches.open('default');
 
         for (let run = 0; run < 10; run++) {
-            response = await cache.match(cacheKey);
+            const response = await cache.match(cacheKey);
 
             if (response) {
                 if (request.method === 'HEAD') {
@@ -68,25 +61,25 @@ export class GitHubPackages {
             }
 
             const auth = btoa(`${env.GITHUB_ACCESS_USER}:${env.GITHUB_ACCESS_TOKEN}`);
-            response = await fetch(repoUrl.toString(), {
+            const fetchedResponse = await fetch(repoUrl.toString(), {
                 headers: {
-                    'Authorization': `Basic ${auth}`,
+                    Authorization: `Basic ${auth}`,
                 },
             });
 
-            if (response.status >= 400 && response.status !== 404) {
+            if (fetchedResponse.status >= 400 && fetchedResponse.status !== 404) {
                 // We'll never cache that problem, but just forward the result.
-                console.error(`Cache missed, need to retrieve it: ${this.organization}/${repository}/${file}... FAILED (reason: ${response.status} - ${response.statusText})!`);
-                return response;
+                console.error(`Cache missed, need to retrieve it: ${this.organization}/${repository}/${file}... FAILED (reason: ${fetchedResponse.status} - ${fetchedResponse.statusText})!`);
+                return fetchedResponse;
             }
 
             // Reconstruct the Response object to make its headers mutable.
-            const toCacheResponse = new Response(response.body, response);
-            toCacheResponse.headers.set("X-Snapshot", `${snapshot}`);
-            toCacheResponse.headers.set("Cache-Control", `public, max-age=${response.status >= 400 ? ttlNotFound : ttl}, immutable`);
+            const toCacheResponse = new Response(fetchedResponse.body, response);
+            toCacheResponse.headers.set('X-Snapshot', `${snapshot}`);
+            toCacheResponse.headers.set('Cache-Control', `public, max-age=${fetchedResponse.status >= 400 ? ttlNotFound : ttl}, immutable`);
             await cache.put(cacheKey, toCacheResponse);
 
-            console.info(`Cache missed, need to retrieve it: ${this.organization}/${repository}/${file}... DONE (exists: ${response.status < 400})!`);
+            console.info(`Cache missed, need to retrieve it: ${this.organization}/${repository}/${file}... DONE (exists: ${fetchedResponse.status < 400})!`);
         }
 
         console.error(`Cache missed, need to retrieve it: ${this.organization}/${repository}/${file}... FAILED (reason: unknown)!`);
@@ -145,7 +138,7 @@ export class GitHubPackages {
                                             }
                                             if (subAsset.name === prefix + '-helm-chart.yaml' && subAsset.browser_download_url) {
                                                 const response = await fetch(subAsset.browser_download_url);
-                                                chart = YAML.parse(await response.text());
+                                                chart = parse(await response.text());
                                                 console.debug(`Found chart github.com/${this.organization}/${repo}/${release.name}/${subAsset.name}`);
                                             }
                                         }
@@ -172,10 +165,7 @@ export class GitHubPackages {
                             }
                         }
                         if (entryHolder && entryHolder.entry) {
-                            nameToEntries[repo] = [
-                                ...(nameToEntries[repo] || []),
-                                entryHolder.entry,
-                            ];
+                            nameToEntries[repo] = [...(nameToEntries[repo] || []), entryHolder.entry];
                         }
                     }
                 }
@@ -187,5 +177,4 @@ export class GitHubPackages {
             entries: nameToEntries,
         };
     }
-
 }

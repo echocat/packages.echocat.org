@@ -1,11 +1,10 @@
-import {ResponseInit} from '@cloudflare/workers-types';
-import YAML from 'yaml';
+import {stringify} from 'yaml';
 import {Environment} from './common';
 import {HelmIndex, HelmIndexApiVersion} from './helm';
 import {GitHubPackages} from './packages_github';
 
 export enum Type {
-    github = "github"
+    github = 'github',
 }
 
 export type Organization = string;
@@ -23,16 +22,13 @@ export interface Packages extends BasePackages {
     preBuild(env: Environment): Promise<void>;
 }
 
-const helmIndexKey = "helm-index.yaml";
+const helmIndexKey = 'helm-index.yaml';
 const oneMinuteInSeconds = 60;
 const oneHourInSeconds = oneMinuteInSeconds * 60;
 const oneDayInSeconds = oneHourInSeconds * 24;
 
 export class CompoundPackages implements Packages {
-
-    private readonly githubEchocat: BasePackages = new GitHubPackages('echocat', [
-        'lingress',
-    ]);
+    private readonly githubEchocat: BasePackages = new GitHubPackages('echocat', ['lingress']);
 
     public async findMavenFile(request: Request, env: Environment, type: Type, organization: Organization, repository: Repository, file: string): Promise<Response | undefined> {
         const delegate = this.resolve(type, organization);
@@ -52,19 +48,22 @@ export class CompoundPackages implements Packages {
     }
 
     public async findHelmIndex(request: Request, env: Environment): Promise<Response | undefined> {
-        let content: ReadableStream<Uint8Array> | string | undefined = await env.KV.get(helmIndexKey, { type: "stream", cacheTtl: oneDayInSeconds });
+        let content: ReadableStream<any> | string | null = await env.KV.get(helmIndexKey, {
+            type: 'stream',
+            cacheTtl: oneDayInSeconds,
+        });
 
         if (!content) {
             const obj = await this.findHelmIndexObject(env);
-            content = YAML.stringify(obj);
-            await env.KV.put(helmIndexKey, content, { expirationTtl: oneDayInSeconds });
+            content = stringify(obj);
+            await env.KV.put(helmIndexKey, content, {expirationTtl: oneDayInSeconds});
         }
 
         const responseSettings: ResponseInit = {
             status: 200,
             headers: {
-                "Content-Type": "text/yaml",
-                "Cache-Control": `public, max-age=${oneDayInSeconds}, immutable`,
+                'Content-Type': 'text/yaml',
+                'Cache-Control': `public, max-age=${oneDayInSeconds}, immutable`,
             },
         };
 
@@ -75,7 +74,7 @@ export class CompoundPackages implements Packages {
         console.info(`Running pre build step...`);
 
         const obj = await this.findHelmIndexObject(env);
-        await env.KV.put(helmIndexKey, YAML.stringify(obj), { expirationTtl: oneDayInSeconds });
+        await env.KV.put(helmIndexKey, stringify(obj), {expirationTtl: oneDayInSeconds});
 
         console.info(`Running pre build step... DONE!`);
     }
@@ -88,7 +87,6 @@ export class CompoundPackages implements Packages {
         }
         return undefined;
     }
-
 }
 
 export const packages: Packages = new CompoundPackages();
