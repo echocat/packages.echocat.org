@@ -63,7 +63,7 @@ export class CompoundPackages implements Packages {
             status: 200,
             headers: {
                 'Content-Type': 'text/yaml',
-                'Cache-Control': `public, max-age=${oneDayInSeconds}, immutable`,
+                'Cache-Control': `public, max-age=${oneHourInSeconds}, immutable`,
             },
         };
 
