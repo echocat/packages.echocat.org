@@ -27,6 +27,8 @@ jobs:
               run: npm run build
 
     deploy:
+        needs:
+            - test
         name: Deploy
         if: github.ref == 'refs/heads/main'
         runs-on: ubuntu-latest
