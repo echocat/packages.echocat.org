@@ -1,13 +1,12 @@
 name = "packages"
 main = "src/index.ts"
-compatibility_date = "2023-12-19"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
 account_id = "76cbc9ff3d45b6d0e9963e41ddeb9b71"
 
 kv_namespaces = [
     { binding = "KV", id = "3f57607bdf1e4fdda53131b1dfffd321", preview_id = "07bf3358543541d4a25d6461f564a438" }
 ]
-
-node_compat = true
 
 [vars]
 GITHUB_ACCESS_USER = "echocatbot"
