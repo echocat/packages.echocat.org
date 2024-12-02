@@ -4,15 +4,15 @@ Source files for the frontend of [packages.echocat.org](https://packages.echocat
 
 ## TOC
 
--   [Usage](#usage)
--   [Deployment](#deployment)
--   [Contributing](#contributing)
--   [License](#license)
+- [Usage](#usage)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Usage
 
--   [Maven](#maven)
--   [Helm](#helm)
+- [Maven](#maven)
+- [Helm](#helm)
 
 ### Maven
 
