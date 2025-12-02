@@ -1,7 +1,9 @@
 /var
-/target
+/.cache
 /.idea
 /dist
 /node_modules
 /.dev.vars
 /.wrangler
+/public
+`1
